@@ -1,0 +1,1897 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Mountain Gear Rental API",
+        "description": "API documentation for Mountain Gear Rental - Hiking Equipment Rental System. This API provides endpoints for managing hiking equipment rentals, customer data, and rental transactions.",
+        "termsOfService": "https://pemweb.uas/terms",
+        "contact": {
+            "name": "Mountain Gear Support",
+            "email": "info@mountaingear.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://pemweb.uas",
+            "description": "Mountain Gear Rental API Server"
+        }
+    ],
+    "paths": {
+        "/api/hiking-equipment": {
+            "get": {
+                "tags": [
+                    "Hiking Equipment"
+                ],
+                "summary": "Get all hiking equipment",
+                "description": "Returns a list of all available hiking equipment for rental",
+                "operationId": "getHikingEquipments",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Filter by category ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "available",
+                        "in": "query",
+                        "description": "Filter by availability",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "example": true
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Equipment retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/HikingEquipment"
+                                            }
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 25
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Hiking Equipment"
+                ],
+                "summary": "Create new hiking equipment",
+                "description": "Add new hiking equipment to the rental inventory",
+                "operationId": "storeHikingEquipment",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "category_id",
+                                    "price_per_day",
+                                    "stock_quantity"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Mountain Backpack Pro 60L"
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Professional hiking backpack with 60L capacity"
+                                    },
+                                    "price_per_day": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 25.5
+                                    },
+                                    "stock_quantity": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "brand": {
+                                        "type": "string",
+                                        "example": "MountainPro"
+                                    },
+                                    "specifications": {
+                                        "type": "object",
+                                        "example": {
+                                            "capacity": "60L",
+                                            "weight": "2.5kg"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Equipment created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Equipment created successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/HikingEquipment"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/hiking-equipment/{id}": {
+            "get": {
+                "tags": [
+                    "Hiking Equipment"
+                ],
+                "summary": "Get hiking equipment by ID",
+                "description": "Returns details of specific hiking equipment",
+                "operationId": "getHikingEquipmentById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Equipment ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Equipment retrieved successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/HikingEquipment"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Equipment not found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Hiking Equipment"
+                ],
+                "summary": "Update hiking equipment",
+                "description": "Update existing hiking equipment details",
+                "operationId": "updateHikingEquipment",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Equipment ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Mountain Backpack Pro 60L Updated"
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Updated description"
+                                    },
+                                    "price_per_day": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 30
+                                    },
+                                    "stock_quantity": {
+                                        "type": "integer",
+                                        "example": 15
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Equipment updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Equipment updated successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/HikingEquipment"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Equipment not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Hiking Equipment"
+                ],
+                "summary": "Delete hiking equipment",
+                "description": "Remove hiking equipment from inventory",
+                "operationId": "deleteHikingEquipment",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Equipment ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Equipment deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Equipment deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Equipment not found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/rentals": {
+            "get": {
+                "tags": [
+                    "Rentals"
+                ],
+                "summary": "Get all rentals",
+                "description": "Returns a list of all rental transactions",
+                "operationId": "getRentals",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by rental status",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pending",
+                                "confirmed",
+                                "active",
+                                "completed",
+                                "cancelled"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "customer_id",
+                        "in": "query",
+                        "description": "Filter by customer ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Rentals retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Rental"
+                                            }
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 50
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Rentals"
+                ],
+                "summary": "Create new rental",
+                "description": "Create a new equipment rental booking",
+                "operationId": "createRental",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "customer_id",
+                                    "start_date",
+                                    "end_date",
+                                    "equipment_items"
+                                ],
+                                "properties": {
+                                    "customer_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "start_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-07-25"
+                                    },
+                                    "end_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-07-30"
+                                    },
+                                    "notes": {
+                                        "type": "string",
+                                        "example": "Weekend hiking trip to Mount Bromo"
+                                    },
+                                    "equipment_items": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "hiking_equipment_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "quantity": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Rental created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Rental created successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Rental"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/rentals/{id}": {
+            "get": {
+                "tags": [
+                    "Rentals"
+                ],
+                "summary": "Get rental by ID",
+                "description": "Returns details of specific rental",
+                "operationId": "getRentalById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Rental ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Rental retrieved successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Rental"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Rental not found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/rentals/{id}/status": {
+            "put": {
+                "tags": [
+                    "Rentals"
+                ],
+                "summary": "Update rental status",
+                "description": "Update the status of a rental (confirm, start, complete, cancel)",
+                "operationId": "updateRentalStatus",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Rental ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "status"
+                                ],
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "confirmed",
+                                            "active",
+                                            "completed",
+                                            "cancelled"
+                                        ],
+                                        "example": "confirmed"
+                                    },
+                                    "notes": {
+                                        "type": "string",
+                                        "example": "Payment confirmed, equipment ready for pickup"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Status updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Rental status updated successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Rental"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Rental not found"
+                    },
+                    "422": {
+                        "description": "Invalid status transition"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/products": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get all products",
+                "description": "Returns a list of all products.",
+                "operationId": "getProducts",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Product"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid API Key"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Create a new product",
+                "description": "Stores a new product and returns the encrypted response.",
+                "operationId": "storeProduct",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "price"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Product A"
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 199.99
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Product created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "string",
+                                            "example": "eyJpdiI6In..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error storing product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error storing product: ..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/products/{id}": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get a product by ID",
+                "description": "Returns a single product",
+                "operationId": "getProductById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "string",
+                                            "example": "eyJpdiI6In..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Update a product",
+                "description": "Updates an existing product",
+                "operationId": "updateProduct",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated Product"
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 299.99
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Product updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "string",
+                                            "example": "eyJpdiI6In..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Delete a product",
+                "description": "Deletes a product by ID",
+                "operationId": "deleteProduct",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "string",
+                                            "example": "eyJpdiI6In..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/products/decrypt": {
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Decrypt encrypted product data",
+                "description": "Decrypts the encrypted product response.",
+                "operationId": "decryptProductResponse",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "data"
+                                ],
+                                "properties": {
+                                    "data": {
+                                        "type": "string",
+                                        "example": "eyJpdiI6IjFPU2h..."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Decrypted response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Product"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Decryption failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Decrypt Failed"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "The payload is invalid."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/tests": {
+            "get": {
+                "tags": [
+                    "Tests"
+                ],
+                "summary": "Get all tests",
+                "operationId": "5f539f69bb1d910182eb35136c5baa3a",
+                "responses": {
+                    "200": {
+                        "description": "List of tests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "List of tests retrieved successfully."
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Test"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Tests"
+                ],
+                "summary": "Create a new test",
+                "operationId": "7728a2f3dd87105d6d617df9a3f231d4",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Test Name"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Test description"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Test created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Test created successfully."
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Test"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/tests/{id}": {
+            "get": {
+                "tags": [
+                    "Tests"
+                ],
+                "summary": "Get a specific test",
+                "operationId": "7e3d8428f4df82c6d4ee7bd1d4d2128c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the test",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Test retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Test retrieved successfully."
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Test"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Test not found"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Tests"
+                ],
+                "summary": "Update a specific test",
+                "operationId": "ca1490751234c723e0a4a708afe16dd6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the test",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated Test Name"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Updated description"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Test updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Test updated successfully."
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Test"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Test not found"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Tests"
+                ],
+                "summary": "Delete a specific test",
+                "operationId": "92f76a68796679554c71a4659f62b296",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the test",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Test deleted successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Test deleted successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Test not found"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Category": {
+                "title": "Equipment Category",
+                "description": "Category model for hiking equipment",
+                "required": [
+                    "id",
+                    "name"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Category ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "Category name",
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Backpacks & Carriers"
+                    },
+                    "slug": {
+                        "description": "URL-friendly category identifier",
+                        "type": "string",
+                        "example": "backpacks-carriers"
+                    },
+                    "description": {
+                        "description": "Category description",
+                        "type": "string",
+                        "example": "High-quality backpacks and carriers for all your hiking adventures"
+                    },
+                    "icon": {
+                        "description": "Category icon identifier",
+                        "type": "string",
+                        "example": "heroicon-o-briefcase"
+                    },
+                    "is_active": {
+                        "description": "Whether category is active",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-21T10:00:00.000000Z"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-21T10:00:00.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "HikingEquipment": {
+                "title": "Hiking Equipment",
+                "description": "Hiking equipment model for rental system",
+                "required": [
+                    "id",
+                    "name",
+                    "category_id",
+                    "price_per_day",
+                    "stock_quantity"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Equipment ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "Equipment name",
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Mountain Backpack Pro 60L"
+                    },
+                    "slug": {
+                        "description": "URL-friendly equipment identifier",
+                        "type": "string",
+                        "example": "mountain-backpack-pro-60l"
+                    },
+                    "category_id": {
+                        "description": "Category ID",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "category": {
+                        "$ref": "#/components/schemas/Category"
+                    },
+                    "description": {
+                        "description": "Equipment description",
+                        "type": "string",
+                        "example": "Professional hiking backpack with 60L capacity, perfect for multi-day trekking adventures"
+                    },
+                    "price_per_day": {
+                        "description": "Rental price per day in IDR",
+                        "type": "number",
+                        "format": "float",
+                        "example": 25000
+                    },
+                    "stock_quantity": {
+                        "description": "Available stock quantity",
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "available_quantity": {
+                        "description": "Currently available quantity (not rented)",
+                        "type": "integer",
+                        "example": 8
+                    },
+                    "brand": {
+                        "description": "Equipment brand",
+                        "type": "string",
+                        "maxLength": 100,
+                        "example": "MountainPro"
+                    },
+                    "specifications": {
+                        "description": "Equipment specifications in JSON format",
+                        "type": "object",
+                        "example": {
+                            "capacity": "60L",
+                            "weight": "2.5kg",
+                            "material": "Ripstop Nylon"
+                        }
+                    },
+                    "image_url": {
+                        "description": "Equipment image URL",
+                        "type": "string",
+                        "example": "https://images.unsplash.com/photo-1551698618-1dfe5d97d256"
+                    },
+                    "is_featured": {
+                        "description": "Whether equipment is featured",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "is_active": {
+                        "description": "Whether equipment is active for rental",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-21T10:00:00.000000Z"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-21T10:00:00.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Product": {
+                "title": "Product",
+                "description": "Product model for hiking equipment rental system",
+                "required": [
+                    "id",
+                    "name",
+                    "price"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Product ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "Product name",
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Mountain Backpack Pro"
+                    },
+                    "price": {
+                        "description": "Product rental price per day",
+                        "type": "number",
+                        "format": "float",
+                        "example": 25.5
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-21T10:00:00.000000Z"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-21T10:00:00.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Rental": {
+                "title": "Equipment Rental",
+                "description": "Rental transaction model",
+                "required": [
+                    "id",
+                    "customer_id",
+                    "rental_code",
+                    "start_date",
+                    "end_date",
+                    "total_amount",
+                    "status"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Rental ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "customer_id": {
+                        "description": "Customer ID",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "customer": {
+                        "$ref": "#/components/schemas/Customer"
+                    },
+                    "rental_code": {
+                        "description": "Unique rental code",
+                        "type": "string",
+                        "example": "RNT-ABC123"
+                    },
+                    "start_date": {
+                        "description": "Rental start date",
+                        "type": "string",
+                        "format": "date",
+                        "example": "2025-07-25"
+                    },
+                    "end_date": {
+                        "description": "Rental end date",
+                        "type": "string",
+                        "format": "date",
+                        "example": "2025-07-30"
+                    },
+                    "total_amount": {
+                        "description": "Total rental amount in IDR",
+                        "type": "number",
+                        "format": "float",
+                        "example": 750000
+                    },
+                    "status": {
+                        "description": "Rental status",
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "confirmed",
+                            "active",
+                            "completed",
+                            "cancelled"
+                        ],
+                        "example": "confirmed"
+                    },
+                    "notes": {
+                        "description": "Additional notes for the rental",
+                        "type": "string",
+                        "example": "Weekend hiking trip to Mount Bromo"
+                    },
+                    "rental_items": {
+                        "description": "List of rented equipment items",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/RentalItem"
+                        }
+                    },
+                    "payments": {
+                        "description": "Payment records for this rental",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Payment"
+                        }
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-21T10:00:00.000000Z"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-21T10:00:00.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "RentalItem": {
+                "title": "Rental Item",
+                "description": "Individual item in a rental",
+                "required": [
+                    "id",
+                    "rental_id",
+                    "hiking_equipment_id",
+                    "quantity",
+                    "price_per_day",
+                    "subtotal"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Rental item ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "rental_id": {
+                        "description": "Rental ID",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "hiking_equipment_id": {
+                        "description": "Equipment ID",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "hiking_equipment": {
+                        "$ref": "#/components/schemas/HikingEquipment"
+                    },
+                    "quantity": {
+                        "description": "Quantity rented",
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "price_per_day": {
+                        "description": "Price per day at time of rental",
+                        "type": "number",
+                        "format": "float",
+                        "example": 25000
+                    },
+                    "subtotal": {
+                        "description": "Subtotal for this item",
+                        "type": "number",
+                        "format": "float",
+                        "example": 300000
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-21T10:00:00.000000Z"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-21T10:00:00.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Customer": {
+                "title": "Customer",
+                "description": "Customer model",
+                "required": [
+                    "id",
+                    "name",
+                    "email",
+                    "phone"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Customer ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "Customer full name",
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "description": "Customer email address",
+                        "type": "string",
+                        "format": "email",
+                        "example": "john.doe@example.com"
+                    },
+                    "phone": {
+                        "description": "Customer phone number",
+                        "type": "string",
+                        "example": "+62812345678"
+                    },
+                    "address": {
+                        "description": "Customer address",
+                        "type": "string",
+                        "example": "Jl. Sudirman No. 123, Jakarta"
+                    },
+                    "id_card_number": {
+                        "description": "Customer ID card number",
+                        "type": "string",
+                        "example": "3201234567890123"
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-21T10:00:00.000000Z"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-21T10:00:00.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Payment": {
+                "title": "Payment",
+                "description": "Payment record model",
+                "required": [
+                    "id",
+                    "rental_id",
+                    "amount",
+                    "payment_method",
+                    "status"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Payment ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "rental_id": {
+                        "description": "Rental ID",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "amount": {
+                        "description": "Payment amount in IDR",
+                        "type": "number",
+                        "format": "float",
+                        "example": 750000
+                    },
+                    "payment_method": {
+                        "description": "Payment method",
+                        "type": "string",
+                        "enum": [
+                            "cash",
+                            "bank_transfer",
+                            "credit_card",
+                            "e_wallet"
+                        ],
+                        "example": "bank_transfer"
+                    },
+                    "status": {
+                        "description": "Payment status",
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "completed",
+                            "failed",
+                            "refunded"
+                        ],
+                        "example": "completed"
+                    },
+                    "payment_date": {
+                        "description": "Payment completion date",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-21T14:30:00.000000Z"
+                    },
+                    "reference_number": {
+                        "description": "Payment reference number",
+                        "type": "string",
+                        "example": "PAY-ABC123"
+                    },
+                    "notes": {
+                        "description": "Payment notes",
+                        "type": "string",
+                        "example": "Transfer from BCA account"
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-21T10:00:00.000000Z"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-21T10:00:00.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Test": {
+                "title": "Test",
+                "required": [
+                    "id",
+                    "name"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Sample Test"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "This is a test record."
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T00:00:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T00:00:00Z"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "ApiKeyAuth": {
+                "type": "apiKey",
+                "description": "API Key Authentication",
+                "name": "X-API-KEY",
+                "in": "header"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Hiking Equipment",
+            "description": "Hiking Equipment"
+        },
+        {
+            "name": "Rentals",
+            "description": "Rentals"
+        },
+        {
+            "name": "Products",
+            "description": "Products"
+        },
+        {
+            "name": "Tests",
+            "description": "Tests"
+        }
+    ]
+}
